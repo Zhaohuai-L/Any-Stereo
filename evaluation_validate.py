@@ -596,7 +596,7 @@ if __name__ == '__main__':
     parser.add_argument('--agg_align', default=False, action='store_true', help='')      
     parser.add_argument('--agg_alignv2', default=False, action='store_true', help='')           
     parser.add_argument('--agg_alignv3', default=False, action='store_true', help='')       
-    parser.add_argument('--unfold_Lac', default=None, help='')       
+    parser.add_argument('--unfold_similarity', default=None, help='')       
     parser.add_argument('--lsp_width', type=int, default=3)
     parser.add_argument('--lsp_height', type=int, default=3)
     parser.add_argument('--lsp_dilation', type=list, default=[1, 2, 4, 8]) 

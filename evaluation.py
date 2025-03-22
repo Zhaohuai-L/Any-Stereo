@@ -604,7 +604,7 @@ if __name__ == '__main__':
     parser.add_argument('--A3mlphidden_list', type=int, nargs='+', default=[64, 32], help="size of the random image crops used during training.")
     parser.add_argument('--A3volume4d_group', type=int, default=0, help="")    
     
-    parser.add_argument('--unfold_Lac', default=None, help='')    
+    parser.add_argument('--unfold_similarity', default=None, help='')    
     parser.add_argument('--lsp_width', type=int, default=3)
     parser.add_argument('--lsp_height', type=int, default=3)
     parser.add_argument('--lsp_dilation', type=list, default=[1, 2, 4, 8])   

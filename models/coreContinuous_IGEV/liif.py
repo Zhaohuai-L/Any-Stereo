@@ -455,7 +455,7 @@ class StructureFeature(nn.Module):
         self.unfold=unfold
         in_c = self.win_w * self.win_h - 1
         self.Affi1=AffinityFeature(self.win_h, self.win_w, self.dilation[0], 0)           
-        if "Dila_Lac" in  self.unfold: 
+        if "Dila_ISU" in  self.unfold: 
             self.Affi2=AffinityFeature(self.win_h, self.win_w, self.dilation[1], 0)           
             self.Affi3=AffinityFeature(self.win_h, self.win_w, self.dilation[2], 0)       
             self.Affi4=AffinityFeature(self.win_h, self.win_w, self.dilation[3], 0)       
@@ -467,15 +467,15 @@ class StructureFeature(nn.Module):
                                            nn.ReLU(inplace=True))
             self.sfc_conv4 = nn.Sequential(convbn(in_c, in_c, 1, 1, 0, 1),
                                            nn.ReLU(inplace=True))
-        elif "Dila_3Lac" in  self.unfold: 
+        elif "Dila_3ISU" in  self.unfold: 
             self.sfc_embeding =convbn(input_chanels, input_chanels//4, 1, 1, 0, 1)               
             self.Affi2=AffinityFeature(self.win_h, self.win_w, self.dilation[1], 0)           
             self.Affi3=AffinityFeature(self.win_h, self.win_w, self.dilation[2], 0)        
-        elif "Dila_2Lac" in  self.unfold: 
+        elif "Dila_2ISU" in  self.unfold: 
             self.sfc_embeding =convbn(input_chanels, input_chanels//4, 1, 1, 0, 1) 
                                 
             self.Affi2=AffinityFeature(self.win_h, self.win_w, self.dilation[1], 0)             
-        elif "with_1_43Lac" in  self.unfold:                     
+        elif "with_1_43ISU" in  self.unfold:                     
             self.Affi2=AffinityFeature(self.win_h, self.win_w, self.dilation[1], 0)           
             self.Affi3=AffinityFeature(self.win_h, self.win_w, self.dilation[2], 0)              
             self.sfc_conv1 = nn.Sequential(convbn(in_c, in_c//2, 1, 1, 0, 1),
@@ -484,23 +484,23 @@ class StructureFeature(nn.Module):
                                 nn.ReLU(inplace=True))     
             self.sfc_conv3 = nn.Sequential(convbn(in_c, in_c//2, 1, 1, 0, 1),
                                 nn.ReLU(inplace=True))            
-        elif "with_1_43v2Lac" in  self.unfold or "with_3v2Lac" in  self.unfold:                   
+        elif "with_1_43v2ISU" in  self.unfold or "with_3v2ISU" in  self.unfold:                   
             self.Affi2=AffinityFeature(self.win_h, self.win_w, self.dilation[1], 0)           
             self.Affi3=AffinityFeature(self.win_h, self.win_w, self.dilation[2], 0)                                          
-        elif "with_embed_Lac" in self.unfold:  
+        elif "with_embed_ISU" in self.unfold:  
             self.sfc_embeding =convbn(input_chanels+8, input_chanels+8, 1, 1, 0, 1)      
     def forward(self, x):       #[B,C,H,W]
-        if "with_Lac" in self.unfold:
+        if "with_ISU" in self.unfold:
             affinity1 = self.Affi1(x)           
             x=torch.cat([x,affinity1],dim=1)          #[B,C+(winH*winW-1),H,W]
-        elif "with_v2Lac" in self.unfold: 
+        elif "with_v2ISU" in self.unfold: 
             feat=x.detach()
             affinity1 = self.Affi1(feat)           
             x=torch.cat([x,affinity1], dim=1)          #[B,C+(winH*winW-1),H,W]            
-        elif "with_1_4Lac" in self.unfold:  
+        elif "with_1_4ISU" in self.unfold:  
             affinity1 = self.Affi1(x)           
             x=torch.cat([x,affinity1],dim=1)          #[B,C+(winH*winW-1),H,W]  
-        elif "with_1_43Lac" in self.unfold:  
+        elif "with_1_43ISU" in self.unfold:  
             feat=x.detach()
             affinity1 = self.Affi1(feat)             
             affinity2 = self.Affi2(feat)        
@@ -509,25 +509,25 @@ class StructureFeature(nn.Module):
             affi_feature2 = self.sfc_conv2(affinity2)
             affi_feature3 = self.sfc_conv3(affinity3)
             x=torch.cat([x,affi_feature1,affi_feature2,affi_feature3],dim=1)          #[B,C+(winH*winW-1),H,W]
-        elif "with_1_43v2Lac" in self.unfold:  
+        elif "with_1_43v2ISU" in self.unfold:  
             feat=x.detach()
             affinity1 = self.Affi1(feat)       
             affinity2 = self.Affi2(feat)              
             affinity3 = self.Affi3(feat)              
             x=torch.cat([x,affinity1,affinity2,affinity3],dim=1)          #[B,C+(winH*winW-1),H,W] 
-        elif "with_3v2Lac" in self.unfold: 
+        elif "with_3v2ISU" in self.unfold: 
             feat=x.detach()
             affinity1 = self.Affi1(feat)               
             affinity2 = self.Affi2(feat)              
             affinity3 = self.Affi3(feat)              
             x=torch.cat([x,affinity1,affinity2,affinity3],dim=1)          #[B,C+(winH*winW-1),H,W]                                
-        elif "with_embed_Lac" in self.unfold:  
+        elif "with_embed_ISU" in self.unfold:  
             affinity1 = self.Affi1(x.detach())    
             feat_embed=torch.cat([x,affinity1],dim=1)          #[B,C+(winH*winW-1),H,W]    
             x=self.sfc_embeding(feat_embed) 
-        elif "only_Lac" in self.unfold: 
+        elif "only_ISU" in self.unfold: 
             x=self.Affi1(x)     
-        elif 'with_Dila_Lac' in self.unfold:
+        elif 'with_Dila_ISU' in self.unfold:
             affinity1 = self.Affi1(x)             
             affinity2 = self.Affi2(x)        
             affinity3 = self.Affi3(x)        
@@ -537,7 +537,7 @@ class StructureFeature(nn.Module):
             affi_feature3 = self.sfc_conv3(affinity3)
             affi_feature4 = self.sfc_conv4(affinity4)
             x = torch.cat((x,affi_feature1, affi_feature2, affi_feature3, affi_feature4), dim=1)
-        elif "only_Dila_Lac" in self.unfold: 
+        elif "only_Dila_ISU" in self.unfold: 
             affinity1 = self.Affi1(x)             
             affinity2 = self.Affi2(x)        
             affinity3 = self.Affi3(x)        
@@ -547,23 +547,23 @@ class StructureFeature(nn.Module):
             affi_feature3 = self.sfc_conv3(affinity3)
             affi_feature4 = self.sfc_conv4(affinity4)
             x = torch.cat((affi_feature1, affi_feature2, affi_feature3, affi_feature4), dim=1)
-        elif 'with_Dila_2Lac' in self.unfold:
+        elif 'with_Dila_2ISU' in self.unfold:
             feat=self.sfc_embeding(x) 
             affinity1 = self.Affi1(feat)             
             affinity2 = self.Affi2(feat)        
             x = torch.cat((x,affinity1, affinity2), dim=1)
-        elif "only_Dila_2Lac" in self.unfold: 
+        elif "only_Dila_2ISU" in self.unfold: 
             feat=self.sfc_embeding(x)             
             affinity1 = self.Affi1(feat)             
             affinity2 = self.Affi2(feat)        
             x = torch.cat((affinity1, affinity2), dim=1)               
-        elif 'with_Dila_3Lac' in self.unfold:
+        elif 'with_Dila_3ISU' in self.unfold:
             feat=self.sfc_embeding(x)                 
             affinity1 = self.Affi1(feat)             
             affinity2 = self.Affi2(feat)        
             affinity3 = self.Affi3(feat)        
             x = torch.cat((x,affinity1, affinity2, affinity3), dim=1)
-        elif "only_Dila_3Lac" in self.unfold: 
+        elif "only_Dila_3ISU" in self.unfold: 
             feat=self.sfc_embeding(x)                 
             affinity1 = self.Affi1(feat)             
             affinity2 = self.Affi2(feat)        
@@ -597,7 +597,7 @@ class liif_out_multi_scale_Training(nn.Module):
         imnet_in_dim = self.encoder_dim    
         in_c = affinity_settings['win_h'] * affinity_settings['win_w'] - 1
         if self.unfold != None:
-            if ("with_1_4Lac" in self.unfold) or ("with_1_43Lac" in self.unfold) or ("with_1_43v2Lac" in self.unfold):
+            if ("with_1_4ISU" in self.unfold) or ("with_1_43ISU" in self.unfold) or ("with_1_43v2ISU" in self.unfold):
                 self.to_sf_l2 = StructureFeature(
                     affinity_settings, self.unfold, input_chanels=None)
             else:
@@ -605,31 +605,31 @@ class liif_out_multi_scale_Training(nn.Module):
                                               )
             if 'only_unfold' in self.unfold:
                 imnet_in_dim = imnet_in_dim*9
-            elif "with_1_4Lac" in self.unfold:
+            elif "with_1_4ISU" in self.unfold:
                 imnet_in_dim += in_c
-            elif "with_1_43Lac" in self.unfold:
+            elif "with_1_43ISU" in self.unfold:
                 imnet_in_dim += (in_c//2)*3
-            elif "with_1_43v2Lac" in self.unfold:
+            elif "with_1_43v2ISU" in self.unfold:
                 imnet_in_dim += (in_c)*3
-            elif "with_3v2Lac" in self.unfold:
+            elif "with_3v2ISU" in self.unfold:
                 imnet_in_dim += (in_c*3*number_input)
-            elif "with_Lac" in self.unfold or "with_v2Lac" in self.unfold:
+            elif "with_ISU" in self.unfold or "with_v2ISU" in self.unfold:
                 imnet_in_dim += (in_c*number_input)
-            elif "with_embed_Lac" in self.unfold:
+            elif "with_embed_ISU" in self.unfold:
                 imnet_in_dim += (in_c*number_input)
-            elif "only_Lac" in self.unfold:
+            elif "only_ISU" in self.unfold:
                 imnet_in_dim = in_c*number_input
-            elif 'with_Dila_Lac' in self.unfold:
+            elif 'with_Dila_ISU' in self.unfold:
                 imnet_in_dim += (in_c*4*number_input)
-            elif "only_Dila_Lac" in self.unfold:
+            elif "only_Dila_ISU" in self.unfold:
                 imnet_in_dim = (in_c*4*number_input)
-            elif 'with_Dila_3Lac' in self.unfold:
+            elif 'with_Dila_3ISU' in self.unfold:
                 imnet_in_dim += (in_c*3*number_input)
-            elif "only_Dila_3Lac" in self.unfold:
+            elif "only_Dila_3ISU" in self.unfold:
                 imnet_in_dim = (in_c*3*number_input)
-            elif 'with_Dila_2Lac' in self.unfold:
+            elif 'with_Dila_2ISU' in self.unfold:
                 imnet_in_dim += (in_c*2*number_input)
-            elif "only_Dila_2Lac" in self.unfold:
+            elif "only_Dila_2ISU" in self.unfold:
                 imnet_in_dim = (in_c*2*number_input)
             else:
                 assert False  
@@ -650,9 +650,9 @@ class liif_out_multi_scale_Training(nn.Module):
             if self.unfold != None:      
                 if 'only_unfold' in self.unfold:  
                     feat = F.unfold(feat, 3, padding=1).view(feat.shape[0], feat.shape[1] * 9, feat.shape[2], feat.shape[3])    #[B,9C,H/4,W/4]                          
-                elif (('with_1_4Lac' in self.unfold) or ('with_1_43Lac' in self.unfold)or ("with_1_43v2Lac" in self.unfold)  )and i==0:           
+                elif (('with_1_4ISU' in self.unfold) or ('with_1_43ISU' in self.unfold)or ("with_1_43v2ISU" in self.unfold)  )and i==0:           
                     feat=self.to_sf_l2(feat)
-                elif ('with_1_4Lac' not in self.unfold) and ('with_1_43Lac' not in self.unfold)and ('with_1_43v2Lac' not in self.unfold):
+                elif ('with_1_4ISU' not in self.unfold) and ('with_1_43ISU' not in self.unfold)and ('with_1_43v2ISU' not in self.unfold):
                     feat=self.to_sf_l2[i](feat)
                 i+=1
             if self.quater_nearest!=None:

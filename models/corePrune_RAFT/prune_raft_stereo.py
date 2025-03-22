@@ -186,7 +186,7 @@ class continuous_RaftStereo(nn.Module):
         affinity_settings['dilation'] = args.lsp_dilation
         if self.multi_training or self.multi_input_training:
             self.liif_up=liif_out_multi_scale_Training(encoder_dim=indim,mlphidden_list=args.mlphidden_list,pos_dim=args.pos_dim,pos_enconding=args.pos_enconding,pos_enconding_new=args.pos_enconding_new,
-                             local_ensemble=args.local_ensemble,decode_cell=args.decode_cell, unfold=args.unfold_Lac,affinity_settings=affinity_settings,quater_nearest=args.quater_nearest,require_grad=args.require_grad,number_input= len(chanels),chanels=chanels)
+                             local_ensemble=args.local_ensemble,decode_cell=args.decode_cell, unfold=args.unfold_similarity,affinity_settings=affinity_settings,quater_nearest=args.quater_nearest,require_grad=args.require_grad,number_input= len(chanels),chanels=chanels)
         else:
             self.liif_up=liif_out(encoder_dim=args.Raw_Mask_dim+48,mlphidden_list=args.mlphidden_list,pos_dim=args.pos_dim,pos_enconding=args.pos_enconding,
                              local_ensemble=args.local_ensemble,decode_cell=args.decode_cell, unfold=args.unfold,require_grad=args.require_grad)            

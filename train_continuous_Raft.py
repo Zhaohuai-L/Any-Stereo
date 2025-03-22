@@ -331,7 +331,7 @@ if __name__ == '__main__':
     parser.add_argument('--hidden_dims', nargs='+', type=int, default=[128]*3, help="hidden state and context dimensions") 
     
     #ISU
-    parser.add_argument('--unfold_Lac', default=None, help='') 
+    parser.add_argument('--unfold_similarity', default="with_v2ISU", help='') 
     parser.add_argument('--lsp_width', type=int, default=3)
     parser.add_argument('--lsp_height', type=int, default=3)
     parser.add_argument('--lsp_dilation', type=list, default=[1, 2, 4, 8]) 
